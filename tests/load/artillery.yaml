@@ -1,0 +1,12 @@
+config:
+  target: "https://pckblog.fly.dev"
+  phases:
+    - duration: 60
+      arrivalRate: 500
+      name: sustained load
+
+scenarios:
+  - name: "Hit login"
+    flow:
+      - get:
+          url: "/"

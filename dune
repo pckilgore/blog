@@ -1,5 +1,4 @@
 (executable
  (name app)
- (libraries dream sqlite3))
-
-(data_only_dirs lib node_modules)
+ (public_name app)
+ (libraries routes dream sqlite3))

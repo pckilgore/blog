@@ -4,6 +4,9 @@ _opam/
 # Dune build environment
 _build/
 
+# dumps and things
+data/
+
 # Git
 .git/
 .gitignore

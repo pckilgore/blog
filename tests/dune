@@ -1,0 +1,4 @@
+(tests
+ (names routes_test)
+ (package blog)
+ (libraries dream routes alcotest alcotest-lwt lwt lwt.unix))

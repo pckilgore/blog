@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    restart: always
+    logging:
+      driver: ${LOGGING_DRIVER:-json-file}
+    volumes: 
+      - type: volume
+        source: pck-blog-data
+        target: /data
+        volume:
+          nocopy: true
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 250M
+
+volumes:
+  pck-blog-data:
