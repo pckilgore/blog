@@ -11,6 +11,7 @@ depends: [
   "alcotest" {with-test}
   "alcotest-lwt" {with-test}
   "core" {>= "0.15.0"}
+  "core_unix" {>= "0.14.0"}
   "dream" {>= "1.0.0~alpha4"}
   "sqlite3" {>= "5.1.0"}
   "dune" {>= "3.3" & >= "3.3"}
