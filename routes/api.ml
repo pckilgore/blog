@@ -10,5 +10,5 @@ module PostResource = struct
   let router = [ Dream.get "/hash/:hash" @@ get_by_hash ]
 end
 
-let stats _ = Dream.json ~headers:[ "", "" ] "{}"
+let stats _ = Dream.json "{}"
 let root = [ Dream.get "/stats" stats; Dream.scope "/post" [] PostResource.router ]
