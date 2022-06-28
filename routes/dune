@@ -2,3 +2,9 @@
  (name routes)
  (package blog)
  (libraries dream model middleware))
+
+(rule
+ (targets template.ml)
+ (deps template.html)
+ (action
+  (run dream_eml %{deps} --workspace %{workspace_root})))

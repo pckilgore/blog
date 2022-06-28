@@ -120,6 +120,7 @@ module DB = struct
         ) WITHOUT ROWID;
       |}
     ; {|CREATE UNIQUE INDEX IF NOT EXISTS idx_hash ON posts ("hash");|}
+    ; {|CREATE UNIQUE INDEX IF NOT EXISTS idx_slug ON posts ("slug");|}
     ]
   ;;
 
@@ -200,6 +201,46 @@ module DB = struct
     |}
     in
     Sqlite3.bind stmt 1 (TEXT hash) |> Sqlite3.Rc.check;
+    Sqlite3.step stmt |> ignore;
+    match Sqlite3.row_data stmt with
+    | [| uuid; created; last_published; slug; status; hash; html; title |] ->
+      Some
+        Sqlite3.Data.
+          { uuid = uuid |> to_string_exn |> Uuid.deserialize
+          ; created = created |> to_string_exn |> Datetime.deserialize
+          ; last_published =
+              last_published |> to_string |> Option.map ~f:Datetime.deserialize
+          ; slug = slug |> to_string_exn
+          ; status = status |> to_string_exn |> Status.deserialize
+          ; hash = hash |> to_string_exn |> Util.Hash.deserialize
+          ; html = html |> to_string
+          ; title = title |> to_string_exn
+          }
+    | [||] | _ -> None
+  ;;
+
+  let by_slug_stmt = ref None
+
+  let get_by_slug ~db slug =
+    let stmt =
+      Sqlite3.prepare_or_reset
+        db
+        by_slug_stmt
+        {|SELECT 
+          "uuid",
+          "created",
+          "last_published",
+          "slug",
+          "status",
+          "hash",
+          "html",
+          "title"
+        FROM posts
+        WHERE slug = :slug
+        LIMIT 1;
+    |}
+    in
+    Sqlite3.bind_name stmt ":slug" (TEXT slug) |> Sqlite3.Rc.check;
     Sqlite3.step stmt |> ignore;
     match Sqlite3.row_data stmt with
     | [| uuid; created; last_published; slug; status; hash; html; title |] ->
