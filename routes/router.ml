@@ -1,10 +1,8 @@
-let main _ = Dream.html "Dream compose"
-let health _ = Dream.json {|{ "healthy": true }|}
-
 let root =
   Dream.router
-    [ Dream.get "/" main
-    ; Dream.get "/health/check" health
-    ; Dream.scope "/api" [] Api.root
+    [ Dream.get "/health/check" (fun _ -> Dream.json {|{ "healthy": true }|})
+    ; Dream.scope "/api" Api.middleware Api.root
+    ; Dream.scope "/static" Assets.middleware Assets.router
+    ; Dream.get "/" (Dream.from_filesystem "public" "index.html")
     ]
 ;;

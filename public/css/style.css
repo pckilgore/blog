@@ -1,0 +1,38 @@
+h1 {
+  font-size: 2rem;
+}
+
+body,
+html {
+  background-color: black;
+  height: 100%;
+  font-family: sans-serif;
+  color: white;
+  font-kerning: auto;
+  letter-spacing: 0.2rem;
+  display: block;
+}
+
+.xl {
+  letter-spacing: 0.5rem;
+}
+
+.em {
+  font-style: italic;
+  font-size: 1.5rem;
+  font-family: serif;
+}
+
+.l {
+  font-weight: 500;
+  font-variant-caps: small-caps;
+}
+
+main {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}

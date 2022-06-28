@@ -39,7 +39,5 @@
    (>= 1.3.1))
   (ppx_yojson_conv
     (>= 0.15.0))
-  (dream-encoding
-    (>= 0.2.0))
   (dune
    (>= 3.3))))

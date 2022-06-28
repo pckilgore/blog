@@ -32,6 +32,7 @@ RUN apk add --update \
   linux-headers
 
 COPY --from=build /home/opam/_build/default/app.exe /bin/app
+COPY --from=build /home/opam/public /public
 HEALTHCHECK --start-period=5s CMD curl --fail http://localhost:8080/health/check || exit 1
 
 ENTRYPOINT /bin/app

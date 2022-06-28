@@ -13,11 +13,7 @@ module Configurable = struct
     | Some _ | None -> `Prod
   ;;
 
-  let logger =
-    match env with
-    | `Prod -> Dream.no_middleware
-    | `Test | `Dev -> Dream.logger
-  ;;
+  let logger = Dream.logger
 
   let db =
     let open Util in
@@ -62,7 +58,6 @@ end
 let () =
   Dream.run ~interface:"0.0.0.0"
   @@ Configurable.logger
-  @@ Dream_encoding.compress
   @@ Middleware.Database.provider ~db:Configurable.db
   @@ Routes.Router.root
 ;;
