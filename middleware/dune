@@ -1,4 +1,4 @@
 (library
  (name middleware)
  (package blog)
- (libraries core util dream sqlite3 model))
+ (libraries core dream sqlite3 model util))

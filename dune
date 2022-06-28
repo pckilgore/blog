@@ -1,4 +1,4 @@
 (executable
  (name app)
  (public_name app)
- (libraries model middleware core util routes dream sqlite3 nanoid.os))
+ (libraries core dream sqlite3 nanoid.os util routes model middleware))
