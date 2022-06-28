@@ -1,4 +1,4 @@
-let test_client = Dream.test Routes.router
+let test_client = Dream.test Routes.Router.root
 
 (** Common alcotest assertions over Dream **)
 module Assert = struct

@@ -1,0 +1,5 @@
+(library
+ (name model)
+ (package blog)
+ (preprocess (pps ppx_yojson_conv))
+ (libraries nanoid sqlite3 timedesc util core core_unix.sys_unix omd))

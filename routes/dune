@@ -1,4 +1,4 @@
 (library
-  (name routes)
-  (libraries dream))
-
+ (name routes)
+ (package blog)
+ (libraries dream model middleware))

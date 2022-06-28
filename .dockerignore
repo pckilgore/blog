@@ -1,4 +1,6 @@
 # opam local switch
+db.sqlite
+.envrc
 _opam/
 
 # Dune build environment
