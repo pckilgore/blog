@@ -47,63 +47,8 @@ type t =
 [@@deriving yojson]
 
 module Slug = struct
-  let unsafe_chars = Str.regexp_string {|([^\w\d]|_)+|}
-  let encode s = Str.global_replace unsafe_chars s "-"
-end
-
-module AsFiles = struct
-  module Path : sig
-    type t
-
-    val to_string : t -> string
-    val make : string -> t
-  end = struct
-    type t = string
-
-    let make t = t
-    let to_string t = t
-  end
-
-  type t =
-    { path : Path.t
-    ; slug : string
-    ; hash : Util.Hash.t
-    ; status : Status.t
-    }
-
-  let posts_dir = "./posts"
-  let drafts_dir = "./posts/drafts"
-
-  let scan file ~status =
-    let path = file |> Filename.concat posts_dir |> Path.make in
-    let slug = file |> Filename.chop_extension |> Slug.encode in
-    let hash =
-      match file |> Util.Hash.of_filename with
-      | Some hash -> hash
-      | None -> failwith Util.Errors.(to_string (EInternalFileSystem "file went missing"))
-    in
-    { path; slug; hash; status }
-  ;;
-
-  let list_filenames status =
-    let dir =
-      match status with
-      | Status.Draft -> posts_dir
-      | Published -> drafts_dir
-    in
-    Sys_unix.ls_dir dir
-    |> List.filter ~f:(fun file ->
-           String.(file = "drafts" || Filename.chop_extension file <> ".md"))
-    |> List.map ~f:(scan ~status)
-  ;;
-
-  let parse_contents_to_html t =
-    t.path
-    |> Path.to_string
-    |> Stdio.In_channel.with_file ~f:Stdio.In_channel.input_all
-    |> Omd.of_string
-    |> Omd.to_html
-  ;;
+  let unsafe_chars = Str.regexp {|[^a-zA-Z0-9_]|}
+  let encode s = Str.global_replace unsafe_chars "-" s |> String.lowercase
 end
 
 module DB = struct
@@ -260,21 +205,144 @@ module DB = struct
   ;;
 
   let update _t = () (* Update Sqlite *)
+
+  let list_stmt db =
+    Sqlite3.prepare
+      db
+      {|
+        SELECT "uuid", "created", "last_published", "slug", "status", "hash", "html", "title"
+        FROM posts
+        ORDER BY "created";
+      |}
+  ;;
+
+  let list_ ~db () =
+    let stmt = list_stmt db in
+    let rc, acc =
+      Sqlite3.fold stmt ~init:[] ~f:(fun acc row ->
+          match row with
+          | [| uuid; created; last_published; slug; status; hash; html; title |] ->
+            Sqlite3.Data.
+              [ { uuid = uuid |> to_string_exn |> Uuid.deserialize
+                ; created = created |> to_string_exn |> Datetime.deserialize
+                ; last_published =
+                    last_published |> to_string |> Option.map ~f:Datetime.deserialize
+                ; slug = slug |> to_string_exn
+                ; status = status |> to_string_exn |> Status.deserialize
+                ; hash = hash |> to_string_exn |> Util.Hash.deserialize
+                ; html = html |> to_string
+                ; title = title |> to_string_exn
+                }
+              ]
+            @ acc
+          | [||] | _ -> acc)
+    in
+    Sqlite3.Rc.check rc;
+    acc
+  ;;
 end
 
-let init () =
-  let posts = AsFiles.list_filenames Published in
-  let drafts = AsFiles.list_filenames Draft in
-  let all = [ posts; drafts ] in
-  List.concat all
-  |> List.iter ~f:(fun (_file : AsFiles.t) ->
-         (* 
-      let post = DB.get_by_hash file.hash in
-      if Util.Hash.(post.hash = file.hash) && post.status == file.status
-      then
-      ()
-      else 
-      WRITE DIFF TO DB
-    *)
-         ())
+module AsFiles = struct
+  module Path : sig
+    type t
+
+    val to_string : t -> string
+    val make : string -> t
+  end = struct
+    type t = string
+
+    let make t = t
+    let to_string t = t
+  end
+
+  type t =
+    { path : Path.t
+    ; slug : string
+    ; hash : Util.Hash.t
+    ; status : Status.t
+    }
+
+  let posts_dir = "./posts"
+  let drafts_dir = "./posts/drafts"
+
+  let has_markdown_extension f =
+    let len = String.length f in
+    let ext = String.sub ~pos:(len - 3) ~len:3 f in
+    String.(ext = ".md")
+  ;;
+
+  let remove_markdown_extension filename =
+    if has_markdown_extension filename
+    then (
+      let len = String.length filename in
+      let end_ = len - 3 in
+      String.slice filename 0 end_)
+    else filename
+  ;;
+
+  let scan file ~status =
+    let path = file |> Path.make in
+    let slug = file |> Filename.basename |> remove_markdown_extension |> Slug.encode in
+    let hash =
+      match file |> Util.Hash.of_filename with
+      | Some hash -> hash
+      | None -> failwith Util.Errors.(to_string (EInternalFileSystem "file went missing"))
+    in
+    { path; slug; hash; status }
+  ;;
+
+  let list_filenames status =
+    let dir =
+      match status with
+      | Status.Draft -> drafts_dir
+      | Published -> posts_dir
+    in
+    let files = Sys_unix.ls_dir dir in
+    files
+    |> List.map ~f:(Filename.concat dir)
+    |> List.filter ~f:(fun file ->
+           match file |> Sys_unix.is_directory with
+           | `Yes | `Unknown -> false
+           | `No -> true)
+    |> List.filter ~f:has_markdown_extension
+    |> List.map ~f:(scan ~status)
+  ;;
+
+  let parse_contents_to_html t =
+    t.path
+    |> Path.to_string
+    |> Stdio.In_channel.with_file ~f:Stdio.In_channel.input_all
+    |> Omd.of_string
+    |> Omd.to_html
+  ;;
+end
+
+let get_slug (t : AsFiles.t) : string = t.slug
+
+(* Blindly add all for now *)
+let add_or_update_file ~db file =
+  let open AsFiles in
+  DB.create
+    ~db
+    { uuid = Uuid.make ()
+    ; created = Datetime.now ()
+    ; last_published = Datetime.now () |> Option.some
+    ; slug = file.slug
+    ; status = Published
+    ; hash = file.hash
+    ; html = parse_contents_to_html file |> Option.some
+    ; title = file.slug
+    }
+;;
+
+let init ~db =
+  (*let post = DB.get_by_hash file.hash in*)
+  (*if Util.Hash.(post.hash = file.hash) && post.status == file.status*)
+  (*then*)
+  (*()*)
+  (*else *)
+  (*WRITE DIFF TO DB*)
+  let open AsFiles in
+  let posts = list_filenames Published in
+  posts |> List.iter ~f:(add_or_update_file ~db)
 ;;

@@ -1,0 +1,31 @@
+let wrapper ~html ~title = 
+  %%
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title><%s title %></title>
+    <meta name="description" content="Writing on software engineering, functional programming, and software companies">
+    <meta name="author" content="Patrick Kilgore">
+    <meta name="keywords" content="software,functional programming,OCaml,Reason,Rust,Roc,Rescript,web development">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="black">
+    <link href="/static/css/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <%s! html %>
+  </body>
+  </html>
+  %%
+
+let render_err =
+  wrapper 
+    ~title:"Render error" 
+    ~html:{|<p>Found post in database, but no rendering exists</p>|}
+
+let not_found = 
+  <main>
+    <h1>Not Found</h1>
+    <p class="em">Are you sure you typed that right?</p>
+  </main>

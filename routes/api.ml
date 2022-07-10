@@ -1,3 +1,5 @@
+open Core
+
 let api_404 _ = Dream.json ~code:404 {|{ "message": "Not found" }|}
 let middleware = []
 
@@ -10,7 +12,16 @@ module PostResource = struct
     | None -> api_404 ()
   ;;
 
-  let router = [ Dream.get "/hash/:hash" @@ get_by_hash ]
+  let list_post request =
+    let db = Middleware.Database.use request in
+    Model.Post.DB.list_ ~db ()
+    |> List.map ~f:Model.Post.yojson_of_t
+    |> (fun l -> `List l)
+    |> Yojson.Safe.to_string
+    |> Dream.json
+  ;;
+
+  let router = [ Dream.get "/" @@ list_post; Dream.get "/hash/:hash" @@ get_by_hash ]
 end
 
 let stats _ = Dream.json {|[ ]|}

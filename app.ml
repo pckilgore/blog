@@ -46,12 +46,13 @@ end
 module Init = struct
   let () =
     let db = Configurable.db in
-    match Configurable.env with
+    (match Configurable.env with
     | `Test | `Dev ->
       Model.Post.DB.(
         init |> List.iter ~f:(Util.Db.exec_exn ~db);
         seed |> Array.iter ~f:(create ~db))
-    | `Prod -> Model.Post.DB.init |> List.iter ~f:(Util.Db.exec_exn ~db)
+    | `Prod -> Model.Post.DB.init |> List.iter ~f:(Util.Db.exec_exn ~db));
+    Model.Post.init ~db
   ;;
 end
 
