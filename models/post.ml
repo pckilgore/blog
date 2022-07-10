@@ -319,29 +319,28 @@ end
 
 let get_slug (t : AsFiles.t) : string = t.slug
 
-(* Blindly add all for now *)
 let add_or_update_file ~db file =
   let open AsFiles in
-  DB.create
-    ~db
-    { uuid = Uuid.make ()
-    ; created = Datetime.now ()
-    ; last_published = Datetime.now () |> Option.some
-    ; slug = file.slug
-    ; status = Published
-    ; hash = file.hash
-    ; html = parse_contents_to_html file |> Option.some
-    ; title = file.slug
-    }
+  match DB.get_by_slug ~db file.slug with
+  | Some existing_post ->
+    if Util.Hash.(existing_post.hash = file.hash)
+    then (* Nothing to do with this file *) ()
+    else failwith "Implement Post updates"
+  | None ->
+    DB.create
+      ~db
+      { uuid = Uuid.make ()
+      ; created = Datetime.now ()
+      ; last_published = Datetime.now () |> Option.some
+      ; slug = file.slug
+      ; status = Published
+      ; hash = file.hash
+      ; html = parse_contents_to_html file |> Option.some
+      ; title = file.slug
+      }
 ;;
 
 let init ~db =
-  (*let post = DB.get_by_hash file.hash in*)
-  (*if Util.Hash.(post.hash = file.hash) && post.status == file.status*)
-  (*then*)
-  (*()*)
-  (*else *)
-  (*WRITE DIFF TO DB*)
   let open AsFiles in
   let posts = list_filenames Published in
   posts |> List.iter ~f:(add_or_update_file ~db)

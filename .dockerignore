@@ -16,3 +16,6 @@ data/
 # Development
 Dockerfile
 docker-compose.yml
+
+# Terraform
+terraform/

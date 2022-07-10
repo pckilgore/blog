@@ -7,3 +7,4 @@ val compare : t -> t -> int
 val deserialize : string -> t
 val serialize : t -> string
 val ( = ) : t -> t -> bool
+val ( <> ) : t -> t -> bool

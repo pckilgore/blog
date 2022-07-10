@@ -1,0 +1,10 @@
+# Access/Secret keys come from environment
+# LITESTREAM_ACCESS_KEY_ID
+# LITESTREAM_SECRET_ACCESS_KEY
+# See terraform state for specifics
+
+exec: /bin/app
+dbs:
+  - path: /db.sqlite
+    replicas:
+      - url: s3://email.pck.blog.db/db.sqlite

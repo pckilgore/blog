@@ -17,3 +17,4 @@ let deserialize t = t
 let serialize t = t
 let compare = String.compare
 let ( = ) = String.( = )
+let ( <> ) = String.( <> )
