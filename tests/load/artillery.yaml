@@ -6,7 +6,11 @@ config:
       name: sustained load
 
 scenarios:
-  - name: "Hit login"
+  - name: "Read Post"
     flow:
       - get:
-          url: "/"
+          url: "/post/blog-in-ocaml"
+  - name: "List Post"
+    flow:
+      - get:
+          url: "/api/post/"

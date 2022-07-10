@@ -29,7 +29,6 @@ RUN tar -C /bin -xzf /litestream.tar.gz
 FROM alpine:3.12 as run
 
 RUN apk add --update \
-  curl \
   bash \
   libev-dev \
   openssl-dev \
@@ -46,4 +45,3 @@ COPY --from=build /home/opam/litestream.yml /etc/litestream.yml
 COPY --from=build /bin/litestream /bin/litestream
 
 CMD ["bash", "/bin/entrypoint.sh"]
-HEALTHCHECK --start-period=5s CMD curl --fail http://localhost:8080/health/check || exit 1

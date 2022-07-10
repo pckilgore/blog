@@ -13,7 +13,11 @@ module Configurable = struct
     | Some _ | None -> `Prod
   ;;
 
-  let logger = Dream.logger
+  let logger =
+    match env with
+    | `Test | `Dev -> Dream.logger
+    | `Prod -> Dream.no_middleware
+  ;;
 
   let db =
     let open Util in

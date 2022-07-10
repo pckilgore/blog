@@ -19,3 +19,6 @@ docker-compose.yml
 
 # Terraform
 terraform/
+
+# Testing
+tests/load
