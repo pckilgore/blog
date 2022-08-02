@@ -5,5 +5,3 @@ set -e
 /bin/litestream restore -v -if-replica-exists /db.sqlite
 
 exec /bin/litestream replicate
-
-

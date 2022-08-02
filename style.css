@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  h1 {
+    @apply prose-stone font-heading leading-8 pt-4;
+  }
+
+  h2 {
+    @apply prose-stone font-heading leading-3 pt-1 text-stone-300;
+  }
+  
+  p {
+    @apply font-prose;
+  }
+}

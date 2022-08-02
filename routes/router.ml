@@ -4,6 +4,10 @@ let root =
     ; Dream.scope "/api" Api.middleware Api.root
     ; Dream.scope "/static" Assets.middleware Assets.router
     ; Dream.scope "/post" Post.middleware Post.router
-    ; Dream.get "/" (Dream.from_filesystem "public" "index.html")
+    ; (Dream.get "/"
+      @@ fun _ ->
+      Dream.html
+        (Template.wrapper ~title:"Patrick Kilgore" ~html:(Template.home ~recents:""))
+      )
     ]
 ;;

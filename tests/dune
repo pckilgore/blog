@@ -1,4 +1,13 @@
 (tests
  (names routes_test util_tests)
  (package blog)
- (libraries dream model util routes alcotest alcotest-lwt lwt lwt.unix nanoid.os))
+ (libraries
+  dream
+  model
+  util
+  routes
+  alcotest
+  alcotest-lwt
+  lwt
+  lwt.unix
+  nanoid.os))

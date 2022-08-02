@@ -2,3 +2,7 @@ _build
 data
 db.sqlite
 .envrc
+
+# CSS builds
+dist
+.parcel-cache
