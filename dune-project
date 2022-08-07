@@ -22,11 +22,11 @@
   (alcotest :with-test)
   (alcotest-lwt :with-test)
   (core
-   (= 0.15.0))
+   (>= 0.15.0))
   (core_unix
-   (= 0.14.0))
+   (>= 0.14.0))
   (stdio
-   (= 0.15.0))
+   (>= 0.15.0))
   (dream
    (= 1.0.0~alpha4))
   (sqlite3
@@ -38,6 +38,6 @@
   (omd
    (= 1.3.1))
   (ppx_yojson_conv
-    (= 0.15.0))
+    (>= 0.15.0))
   (dune
    (>= 3.3))))

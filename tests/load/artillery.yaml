@@ -1,8 +1,9 @@
 config:
   target: "https://pckblog.fly.dev"
   phases:
-    - duration: 60
-      arrivalRate: 500
+    - duration: 180
+      arrivalRate: 10
+      rampTo: 500
       name: sustained load
 
 scenarios:
