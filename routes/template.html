@@ -3,66 +3,69 @@
 *)
 
 let wrapper ~html ~title =
-  %%
-  <!DOCTYPE html>
-  <html lang="en" class="h-full">
+%%
+<!DOCTYPE html>
+<html lang="en" class="h-full">
 
-  <head>
-    <meta charset="UTF-8">
-    <title>
-      <%s title %>
-    </title>
-    <meta name="description" content="Writing on software engineering, functional programming, and software companies">
-    <meta name="author" content="Patrick Kilgore">
-    <meta name="keywords" content="software,functional programming,OCaml,Reason,Rust,Roc,Rescript,web development">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="black">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Bitter:ital,wght@0,200;0,400;0,700;1,200;1,400;1,700&display=swap" rel="stylesheet">
-    <link href="/static/css/style.1.css" rel="stylesheet">
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <title>
+    <%s title %>
+  </title>
+  <meta name="description" content="Writing on software engineering, functional programming, and software companies">
+  <meta name="author" content="Patrick Kilgore">
+  <meta name="keywords" content="software,functional programming,OCaml,Reason,Rust,Roc,Rescript,web development">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="black">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Righteous&family=Bitter:ital,wght@0,200;0,400;0,700;1,200;1,400;1,700&display=swap"
+    rel="stylesheet">
+  <link href="../style.css" rel="stylesheet">
+</head>
 
-  <body class="h-full bg-stone-50">
-    <%s! html %>
-  </body>
+<body class="h-full bg-stone-50">
+  <%s! html %>
+</body>
 
-  </html>
-  %%
+</html>
+%%
 
 let render_err =
-  wrapper
-  ~title:"Render error"
-  ~html:{|<p>Found post in database, but no rendering exists</p>|}
+wrapper
+~title:"Render error"
+~html:{|<p>Found post in database, but no rendering exists</p>|}
 
 let not_found =
-  %%
-  <main>
-    <h1>Not Found</h1>
-    <p class="em">Are you sure you typed that right?</p>
-  </main>
-  %%
+%%
+<main>
+  <h1>Not Found</h1>
+  <p class="em">Are you sure you typed that right?</p>
+</main>
+%%
 
 let home ~recents =
-  %%
-  <div class="flex flex-col justify-between h-full items-center px-8 sm:px-12 lg:px-16 pb-0">
-    <main class="flex flex-col w-full max-w-prose prose md:prose-lg lg:prose-xl"> 
-      <section>
-        <h1>Softbrain</h1>
-        <p>
-          <i>Essays &amp; soundbites on software. Some of them good.</i>
-        </p>
-      </section>
-      <section>
-        <input id="search" type="text" placeholder="search for anything" class="w-full rounded-xl" />
-      </section>
-      <section>
-        <h2>Some new things</h2>
-        <%s! recents %>
-      </section>
-    </main>
-    <footer class="flex flex-nowrap justify-end italic text-stone-300 font-prose font-extralight text-lg md:text-3xl lg:text-5xl pt-8 sm:pt-12 lg:pt-16">
-      Write software. <b>Not too much.</b> Mostly Functional.
-    </footer>
-  </div>
-  %%
+%%
+<div class="flex flex-col justify-between h-full items-center px-8 sm:px-12 lg:px-16 pb-0">
+  <main class="flex flex-col w-full max-w-prose prose md:prose-lg lg:prose-xl">
+    <section>
+      <h1>Softbrain</h1>
+      <p>
+        <i>Essays &amp; soundbites on software. Some of them good.</i>
+      </p>
+    </section>
+    <section>
+      <input id="search" type="text" placeholder="search for anything" class="w-full rounded-xl" />
+    </section>
+    <section>
+      <h2>Some new things</h2>
+      <%s! recents %>
+    </section>
+  </main>
+  <footer
+    class="flex flex-nowrap justify-end italic text-stone-300 font-prose font-extralight text-lg md:text-3xl lg:text-5xl pt-8 sm:pt-12 lg:pt-16">
+    Write software. <b>Not too much.</b> Mostly Functional.
+  </footer>
+</div>
+%%

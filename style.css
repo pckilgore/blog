@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer components {
   h1 {
     @apply prose-stone font-heading leading-8 pt-4;

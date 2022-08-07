@@ -2,3 +2,10 @@
  (name app)
  (public_name app)
  (libraries core dream sqlite3 nanoid.os util routes model middleware))
+
+(rule 
+  (alias css)
+  (deps 
+    (glob_files *.html)
+    (file style.css))
+  (action (run yarn tailwindcss -i ./style.css -o ./public/css/style.1.css)))
