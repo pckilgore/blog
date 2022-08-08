@@ -1,7 +1,7 @@
 (library
  (name routes)
  (package blog)
- (libraries dream model middleware))
+ (libraries core dream model middleware re2))
 
 (rule
  (targets template.ml)

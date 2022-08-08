@@ -22,3 +22,6 @@ terraform/
 
 # Testing
 tests/load
+
+# Node stuff
+node_modules

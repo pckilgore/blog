@@ -7,7 +7,6 @@ let root =
     ; (Dream.get "/"
       @@ fun _ ->
       Dream.html
-        (Template.wrapper ~title:"Patrick Kilgore" ~html:(Template.home ~recents:""))
-      )
+        (Template.wrapper ~title:"Patrick Kilgore" ~html:(Template.home ~recents:"")))
     ]
 ;;

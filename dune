@@ -3,9 +3,19 @@
  (public_name app)
  (libraries core dream sqlite3 nanoid.os util routes model middleware))
 
+(rule
+  (alias nodeinstall)
+  (deps (file yarn.lock))
+  (action 
+    (system "yarn install --silent --frozen-lockfile")))
+
 (rule 
   (alias css)
+  (target style.build.css)
+  (mode promote)
   (deps 
+    (alias nodeinstall)
     (glob_files *.html)
     (file style.css))
-  (action (run yarn tailwindcss -i ./style.css -o ./public/css/style.1.css)))
+  (action 
+    (system "yarn --silent tailwindcss --minify -i style.css > %{target} 2>/dev/null")))
